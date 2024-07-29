@@ -214,7 +214,7 @@ window.tpe.inject = function inject() {
     }
 
     if ([4, 5, 6].includes(accountType)) {
-      $("#seh_bank_no").val("郵局");
+      $("#seh_bank_no").val("郵局郵政儲金匯業局");
       $("#seh_bank_no").trigger("blur");
 
       $("#divSettingForm").find("#acc_name").val(rawAccount.slice(1));
