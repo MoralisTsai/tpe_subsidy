@@ -69,7 +69,7 @@ window.tpe.next = async function next() {
 
   function manualUserDetail() {
     const additional = window.prompt(
-      `${subsidy.appName} -> 申請人身份證字號 | 性別 | 出生日期 | 聯絡電話`
+      `${subsidy.appName} -> 申請人身份證字號 | 性別 | 出生日期 | 聯絡電話`,
     );
 
     const [appId, appSex, appBir, appTel] = additional.split(" ");
@@ -79,7 +79,7 @@ window.tpe.next = async function next() {
       {
         M: 1,
         F: 2,
-      }[appSex]
+      }[appSex],
     );
 
     $("#app_bir").val(literalDateConverter(appBir));
@@ -126,7 +126,7 @@ window.tpe.inject = function inject() {
 
   function manualInputHandler() {
     const additional = window.prompt(
-      `${subsidy.appName}(${subsidy.careName}) -> 申請日期 | 申請金額 | 醫院`
+      `${subsidy.appName}(${subsidy.careName}) -> 申請日期 | 申請金額 | 醫院`,
     );
     const [appDate, appMoney, appHospital] = additional.split(" ");
 
@@ -169,6 +169,29 @@ window.tpe.inject = function inject() {
         [
           "榮祥富邦",
           ["臺北市私立榮祥老人長期照顧中心(養護型)", "361102007347"],
+        ],
+        ["祥閎中信", ["祥閎管理顧問企業社", "819540207790"]],
+        ["同仁土城", ["同仁醫院附設土城護理之家", "77504011003355"]],
+        [
+          "倚青富邦",
+          [
+            "臺北市私立倚青苑老人長期照顧中心（養護型）江國華",
+            "82120000023730",
+          ],
+        ],
+        ["和樂中信", ["和樂照服企業社", "657540101252"]],
+        ["福德永豐", ["福德護理之家", "12701800123498"]],
+        ["東明華南", ["臺北市東明扶愛家園", "113100158419"]],
+        ["健安土地", ["健安管理顧問企業社", "004001151342"]],
+        ["宜蘭第一", ["衛生福利部社會及家庭署宜蘭教養院", "15350360016"]],
+        [
+          "上美彰化",
+          ["臺北市私立上美老人長期照顧中心（養護型）李依蓮", "98320101606300"],
+        ],
+        ["惠群兆豐", ["惠群護理之家周惠貞", "20609020005"]],
+        [
+          "仁群永豐",
+          ["臺北市私立仁群老人長期照顧中心(養護型)劉昱森", "14801800071655"],
         ],
       ]);
 
@@ -216,7 +239,7 @@ function convertToNumber(value) {
 
   if (Number.isNaN(result)) {
     throw Error(
-      "Unable to retrieve account ID. Please ensure that the `care.account` follows the format."
+      "Unable to retrieve account ID. Please ensure that the `care.account` follows the format.",
     );
   }
 
