@@ -76,7 +76,7 @@ window.tpe.next = async function next() {
     const appSex = typeof appId === 'string' ? appId.slice(1,2) : 1;
 
     $("#app_id").val(appId);
-    $('#app_sex").val(appSex);
+    $("#app_sex").val(appSex);
 
     $("#app_bir").val(literalDateConverter(appBir));
     $("#app_bir").trigger("blur");
