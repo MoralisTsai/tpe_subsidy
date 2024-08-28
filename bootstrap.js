@@ -69,18 +69,14 @@ window.tpe.next = async function next() {
 
   function manualUserDetail() {
     const additional = window.prompt(
-      `${subsidy.appName} -> 申請人身份證字號 | 性別 | 出生日期 | 聯絡電話`,
+      `${subsidy.appName} -> 申請人身份證字號 | 出生日期 | 聯絡電話`,
     );
 
-    const [appId, appSex, appBir, appTel] = additional.split(" ");
+    const [appId, appBir, appTel] = additional.split(" ");
+    const appSex = typeof appId === 'string' ? appId.slice(1,2) : 1;
 
     $("#app_id").val(appId);
-    $("#app_sex").val(
-      {
-        M: 1,
-        F: 2,
-      }[appSex],
-    );
+    $('#app_sex").val(appSex);
 
     $("#app_bir").val(literalDateConverter(appBir));
     $("#app_bir").trigger("blur");
