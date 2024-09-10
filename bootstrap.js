@@ -256,6 +256,10 @@ window.tpe.inject = function inject() {
           "新長安永豐",
           ["臺北市私立新常安老人長期照顧中心(養護型)", "16200100081933"],
         ],
+        [
+          "康乃元大",
+          ["康乃心護理之家", "00426210670496"],
+        ],
       ]);
 
       const accountDetail = rawAccount.slice(1, 5);
