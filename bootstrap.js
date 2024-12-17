@@ -1,50 +1,50 @@
-window.tpe = {};
+window.tpe = {}
 
-window.tpe.accounts = [];
+window.tpe.accounts = []
 
 window.tpe.set = function set(value) {
-  window.tpe.index = value;
-};
+  window.tpe.index = value
+}
 
 window.tpe.log = function log() {
-  console.group("Execution detail: ");
-  console.log("Current index: ", window.tpe.index);
-  console.log("Name: ", window.tpe.subsidies[window.tpe.index]?.appName);
-  console.log("Accounts: ", window.tpe.accounts);
-  console.groupEnd();
-};
+  console.group("Execution detail: ")
+  console.log("Current index: ", window.tpe.index)
+  console.log("Name: ", window.tpe.subsidies[window.tpe.index]?.appName)
+  console.log("Accounts: ", window.tpe.accounts)
+  console.groupEnd()
+}
 
 window.tpe.boot = function boot(values) {
-  window.tpe.index = 0;
-  window.tpe.subsidies = values;
-};
+  window.tpe.index = 0
+  window.tpe.subsidies = values
+}
 
 window.tpe.next = async function next() {
   if (window.tpe.index > window.tpe.subsidies.length - 1) {
-    console.group("Congratulation! All date has been created");
-    console.log("Total: ", window.tpe.index);
-    console.log("Accounts: ", window.tpe.accounts);
-    console.groupEnd();
-    return;
+    console.group("Congratulation! All date has been created")
+    console.log("Total: ", window.tpe.index)
+    console.log("Accounts: ", window.tpe.accounts)
+    console.groupEnd()
+    return
   }
 
-  const subsidy = window.tpe.subsidies[window.tpe.index];
+  const subsidy = window.tpe.subsidies[window.tpe.index]
 
-  const user = await checkUserAvailability(subsidy.appName);
+  const user = await checkUserAvailability(subsidy.appName)
 
   if (user == null) {
-    return;
+    return
   }
 
-  const __changeSearch = changeSearch;
-  __changeSearch(user.app_no, user.app_id, user.app_name);
+  const __changeSearch = changeSearch
+  __changeSearch(user.app_no, user.app_id, user.app_name)
 
   setTimeout(async function () {
-    window.tpe.inject();
-  }, 1000);
+    window.tpe.inject()
+  }, 1000)
 
   async function checkUserAvailability(value) {
-    $("#app_name").val(value);
+    $("#app_name").val(value)
 
     const response = await $.ajax({
       url: "https://sw.gov.taipei/M24_T211_001/GetApplyList",
@@ -52,41 +52,41 @@ window.tpe.next = async function next() {
       data: {
         app_name: value,
       },
-    });
+    })
 
     if (Array.isArray(response) && response.length === 0) {
-      manualUserDetail();
+      manualUserDetail()
 
-      return Promise.resolve(null);
+      return Promise.resolve(null)
     }
 
     if (Array.isArray(response) && response.length > 1) {
-      throw Error("Received more than one user with the same name");
+      throw Error("Received more than one user with the same name")
     }
 
-    return response[0];
+    return response[0]
   }
 
   function manualUserDetail() {
     const additional = window.prompt(
       `${subsidy.appName} -> 申請人身份證字號 | 出生日期 | 聯絡電話`,
-    );
+    )
 
-    const [appId, appBir, appTel] = additional.split(" ");
-    const appSex = typeof appId === 'string' ? appId.slice(1,2) : 1;
+    const [appId, appBir, appTel] = additional.split(" ")
+    const appSex = typeof appId === "string" ? appId.slice(1, 2) : 1
 
-    $("#app_id").val(appId);
-    $("#app_sex").val(appSex);
+    $("#app_id").val(appId)
+    $("#app_sex").val(appSex)
 
-    $("#app_bir").val(literalDateConverter(appBir));
-    $("#app_bir").trigger("blur");
+    $("#app_bir").val(literalDateConverter(appBir))
+    $("#app_bir").trigger("blur")
 
-    $("#app_tel").val(appTel);
+    $("#app_tel").val(appTel)
   }
-};
+}
 
 window.tpe.push = function push() {
-  const subsidy = window.tpe.subsidies[window.tpe.index];
+  const subsidy = window.tpe.subsidies[window.tpe.index]
 
   window.tpe.accounts.push({
     applicant: subsidy.appName,
@@ -94,47 +94,47 @@ window.tpe.push = function push() {
     full: $("#bank_no option:selected").text(),
     name: $("#acc_name").val(),
     no: $("#acc_no").val(),
-  });
+  })
 
-  window.tpe.index += 1;
+  window.tpe.index += 1
 
-  const __clearSearchBtn = clearSearchBtn;
-  __clearSearchBtn();
-};
+  const __clearSearchBtn = clearSearchBtn
+  __clearSearchBtn()
+}
 
 window.tpe.inject = function inject() {
-  const subsidy = window.tpe.subsidies[window.tpe.index];
+  const subsidy = window.tpe.subsidies[window.tpe.index]
 
-  $("#agr_date").val(subsidy.agrDate.replaceAll(".", "/"));
-  $("#seh_co_desc2").val(subsidy.coNo);
-  $("#seh_co_desc2").trigger("blur");
-  $("#hos_date1").val(dateParser(subsidy.hosDate1));
-  $("#hos_date2").val(dateParser(subsidy.hosDate2));
-  $("#agr_money").val(subsidy.agrMoney);
-  $("#hos_day").val(Math.round(subsidy.hosDay));
-  $("#mny_no").val(accountIDParser(subsidy.account));
-  $("#care_name").val(subsidy.careName);
-  $("#care_id").val(subsidy.careId);
+  $("#agr_date").val(subsidy.agrDate.replaceAll(".", "/"))
+  $("#seh_co_desc2").val(subsidy.coNo)
+  $("#seh_co_desc2").trigger("blur")
+  $("#hos_date1").val(dateParser(subsidy.hosDate1))
+  $("#hos_date2").val(dateParser(subsidy.hosDate2))
+  $("#agr_money").val(subsidy.agrMoney)
+  $("#hos_day").val(Math.round(subsidy.hosDay))
+  $("#mny_no").val(accountIDParser(subsidy.account))
+  $("#care_name").val(subsidy.careName)
+  $("#care_id").val(subsidy.careId)
 
-  retrieveAccount(subsidy.account);
+  retrieveAccount(subsidy.account)
 
-  manualInputHandler();
+  manualInputHandler()
 
   function manualInputHandler() {
     const additional = window.prompt(
       `${subsidy.appName}(${subsidy.careName}) -> 申請日期 | 申請金額 | 醫院`,
-    );
-    const [appDate, appMoney, appHospital] = additional.split(" ");
+    )
+    const [appDate, appMoney, appHospital] = additional.split(" ")
 
-    $("#app_date").val(literalDateConverter(appDate));
-    $("#app_money").val(appMoney);
+    $("#app_date").val(literalDateConverter(appDate))
+    $("#app_money").val(appMoney)
 
-    $("#seh_hos_no").val(appHospital);
-    $("#seh_hos_no").trigger("blur");
+    $("#seh_hos_no").val(appHospital)
+    $("#seh_hos_no").trigger("blur")
   }
 
   function retrieveAccount(rawAccount) {
-    const accountType = convertToNumber(rawAccount.slice(0, 1));
+    const accountType = convertToNumber(rawAccount.slice(0, 1))
 
     if ([1, 2, 3].includes(accountType)) {
       const commonAccount = new Map([
@@ -167,13 +167,35 @@ window.tpe.inject = function inject() {
         ["馨園臺企", ["財團法人新北市私立馨園老人養護中心", "07012069906"]],
         ["德安合庫", ["社團法人台灣德安社會福利協會", "5034717357337"]],
         ["樺新富邦", ["樺新管理顧問企業社", "221102008940"]],
-        ["天恩彰化", ["臺北市私立天恩老人長期照顧中心(養護型)薛綉娥", "51300151911700"]],
         ["永順合庫", ["新北市私立永順老人養護中心", "1449717720807"]],
-        ["同心土城", ["新北市私立同心老人長期照顧中心(養護型)", "77504010000261"]],
         ["松青合庫", ["台北市私立松青園老人養護所", "0020717396775"]],
         ["隆泰中信", ["隆泰護理之家", "186540124797"]],
-        ["新常安永豐", ["臺北市私立新常安老人長期照顧中心(養護型)", "16200100081933"]],
-        ["萬芳永豐", ["臺北市立萬芳醫院-委託臺北醫學大學辦理", "10600401000332"]],
+        ["詠靜臺銀", ["詠靜護理之家沈惠萍", "229001001774"]],
+        ["護康合庫", ["護康人力資源管理顧問有限公司", "3557717509892"]],
+        ["海天第一", ["海天醫療社團法人附設精神護理之家", "26110057891"]],
+        ["康乃元大", ["康乃心護理之家", "00426210670496"]],
+        ["恩光合作", ["恩光服務有限公司", "1391717211432"]],
+        ["護康合作", ["護康人力資源管理顧問有限公司", "3557717509892"]],
+        ["祥好第一", ["新北市私立祥好尊榮老人養護中心", "24710006388"]],
+        ["慧和合作", ["臺北縣私立慧和護理之家", "0460717370717"]],
+        ["全崴合作", ["全崴企業社", "0090717584448"]],
+        ["荷蘭村第一", ["荷蘭村護理之家", "31210039867"]],
+        [
+          "天恩彰化",
+          ["臺北市私立天恩老人長期照顧中心(養護型)薛綉娥", "51300151911700"],
+        ],
+        [
+          "同心土城",
+          ["新北市私立同心老人長期照顧中心(養護型)", "77504010000261"],
+        ],
+        [
+          "新常安永豐",
+          ["臺北市私立新常安老人長期照顧中心(養護型)", "16200100081933"],
+        ],
+        [
+          "萬芳永豐",
+          ["臺北市立萬芳醫院-委託臺北醫學大學辦理", "10600401000332"],
+        ],
         [
           "仁光富邦",
           ["有限責任臺北市仁光照顧服務勞動合作社 林淑絹", "370102145900"],
@@ -224,10 +246,7 @@ window.tpe.inject = function inject() {
           "同心農會",
           ["新北市私立同心老人長期照顧中心(養護型)", "77504010000261"],
         ],
-        [
-          "圓心富邦",
-          ["私立圓心康復之家顏伶伩", "390102796899"],
-        ],
+
         [
           "崇惠彰化",
           ["新北市私立崇惠老人長期照顧中心（養護型）鍾秋月", "51780158999900"],
@@ -235,88 +254,87 @@ window.tpe.inject = function inject() {
         [
           "崇惠彰化",
           ["新北市私立崇惠老人長期照顧中心（養護型）鍾秋月", "51780158999900"],
-        ],
-        [
-          "福德永豐",
-          ["福德護理之家", "12701800123498"],
-        ],
-        [
-          "詠靜臺銀",
-          ["詠靜護理之家沈惠萍", "229001001774"],
-        ],
-        [
-          "護康合庫",
-          ["護康人力資源管理顧問有限公司", "3557717509892"],
-        ],
-        [
-          "海天第一",
-          ["海天醫療社團法人附設精神護理之家", "26110057891"],
         ],
         [
           "新長安永豐",
           ["臺北市私立新常安老人長期照顧中心(養護型)", "16200100081933"],
         ],
+        ["奇美臺銀", ["奇美醫療財團法人柳營奇美醫院", "028001115707"]],
         [
-          "康乃元大",
-          ["康乃心護理之家", "00426210670496"],
+          "群仁永豐",
+          ["臺北市私立群仁老人長期照顧中心(養護型)陳怡岑", "14801800071647"],
         ],
-      ]);
+        [
+          "同德上海",
+          ["臺北市私立同德老人長期照顧中心(養護型)", "29102000031769"],
+        ],
+        [
+          "仁泰台新",
+          ["新北市私立仁泰老人長期照顧中心(養護型)", "20650100011125"],
+        ],
+        ["上好合作", ["上好護理之家", "0240717125275"]],
+        [
+          "彰化基督中信",
+          ["彰化基督教醫療財團法人彰化基督教醫院", "078530038927"],
+        ],
+        ["國醫國泰", ["國泰醫療財團法人", "218030000604"]],
+      ])
 
-      const accountDetail = rawAccount.slice(1, 5);
-      const shouldAutoInject = commonAccount.has(accountDetail);
+      const accountDetail = rawAccount.slice(1, 5)
+      const shouldAutoInject = commonAccount.has(accountDetail)
 
       if (shouldAutoInject) {
-        const [fullName, fullAccount] = commonAccount.get(accountDetail);
+        const [fullName, fullAccount] = commonAccount.get(accountDetail)
 
-        $("#divSettingForm").find("#acc_name").val(fullName);
-        $("#divSettingForm").find("#acc_no").val(fullAccount);
+        $("#divSettingForm").find("#acc_name").val(fullName)
+        $("#divSettingForm").find("#acc_no").val(fullAccount)
       }
 
-      $("#seh_bank_no").val(rawAccount.slice(-2));
-      $("#seh_bank_no").trigger("blur");
+      $("#seh_bank_no").val(rawAccount.slice(-2))
+      $("#seh_bank_no").trigger("blur")
     }
 
     if ([4, 5, 6].includes(accountType)) {
-      $("#seh_bank_no").val("郵局郵政儲金匯業局");
-      $("#seh_bank_no").trigger("blur");
+      $("#seh_bank_no").val("郵局郵政儲金匯業局")
+      $("#seh_bank_no").trigger("blur")
 
-      $("#divSettingForm").find("#acc_name").val(rawAccount.slice(1));
+      $("#divSettingForm").find("#acc_name").val(rawAccount.slice(1))
     }
   }
-};
+}
 
 function dateParser(value) {
   if (typeof value !== "string") {
-    throw Error("invalid date value is passed, received: ", value);
+    throw Error("invalid date value is passed, received: ", value)
   }
 
-  return value.replaceAll(".", "/").substring(0, 9);
+  return value.replaceAll(".", "/").substring(0, 9)
 }
 
 function accountIDParser(value) {
-  const index = convertToNumber(value.slice(0, 1));
+  const index = convertToNumber(value.slice(0, 1))
 
-  const ACCOUNT_ID = ["C001", "C002", "C003", "C004", "C005", "C006"];
+  const ACCOUNT_ID = ["C001", "C002", "C003", "C004", "C005", "C006"]
 
-  return ACCOUNT_ID[index - 1];
+  return ACCOUNT_ID[index - 1]
 }
 
 function convertToNumber(value) {
-  const result = Number(value);
+  const result = Number(value)
 
   if (Number.isNaN(result)) {
     throw Error(
       "Unable to retrieve account ID. Please ensure that the `care.account` follows the format.",
-    );
+    )
   }
 
-  return result;
+  return result
 }
 
 function literalDateConverter(value) {
-  const year = value.slice(0, 3);
-  const month = value.slice(3, 5);
-  const day = value.slice(5);
+  const year = value.slice(0, 3)
+  const month = value.slice(3, 5)
+  const day = value.slice(5)
 
-  return `${year}/${month}/${day}`;
+  return `${year}/${month}/${day}`
 }
